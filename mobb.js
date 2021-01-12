@@ -99,9 +99,30 @@ function extractFromSelector(selector) {
  */
 function checkSignUp() {
 	var runOnThisPage = true;
+
 	var email = getStorageItem(storageKeys.email);
 	if (!email && runOnThisPage) {
 		showModal();
+	}
+}
+
+/**
+ * Checks query params and store the details in local storage to mark the user as logged in.
+ */
+function checkQueryParams() {
+	try {
+		var search = location.search.substring(1);
+		if (search) {
+			var params = JSON.parse('{"' + decodeURI(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}');
+			if (params.firstName) {
+				setStorageItem(storageKeys.firstName, params.firstName);
+			}
+			if (params.email) {
+				setStorageItem(storageKeys.email, params.email);
+			}
+		}
+	} catch (e) {
+		console.error('error in get query params: ', e);
 	}
 }
 
@@ -114,6 +135,7 @@ function signupUser(event) {
 	var firstName = extractFromSelector(formSelector + ' input[name="Name"]');
 	var userPayload = { email: email, firstName: firstName };
 	setStorageItem(storageKeys.email, email);
+	setStorageItem(storageKeys.firstName, firstName);
 	$.post(serverUrl + '/users', userPayload).done(function (response) {
 		console.log('Posted data to server');
 		// TODO: Show message/notification to user
@@ -123,11 +145,10 @@ function signupUser(event) {
 	});
 }
 
-
 /**
- * Chore part of the app
+ * Generates a modal and appends it to body
  */
-$(document).ready(function () {
+function createModalInBody() {
 	var modalBody = document.createElement('div');
 	modalBody.id = 'email-signup-modal';
 	modalBody.className = 'mobb-modal';
@@ -158,13 +179,18 @@ $(document).ready(function () {
       </div>
 		</div>`;
 	$(document.body).append(modalBody);
+}
 
+/**
+ * Chore part of the app
+ */
+$(document).ready(function () {
+	createModalInBody();
 	$('.mobb-modal-toggle').click(function (params) {
 		hideModal();
 	});
-
 	$(formSelector).submit(signupUser);
-
+	checkQueryParams();
 	setTimeout(() => {
 		checkSignUp();
 	}, 2000);
