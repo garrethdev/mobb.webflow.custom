@@ -263,3 +263,9 @@ $(document).ready(function () {
 	$(formSelector).submit(signupUser);
 	handleVideoPlaybackCheck();
 });
+
+// http://cdn.jsdelivr.net/gh/garrethdev/mobb.webflow.custom@6e186f3ac8f03b1363edc7587b7fb6ff16d9e14f/mobb.js
+// http://cdn.jsdelivr.net/gh/garrethdev/mobb.webflow.custom@6e186f3ac8f03b1363edc7587b7fb6ff16d9e14f/mobb.css
+
+// https://raw.githubusercontent.com/garrethdev/mobb.webflow.custom/6e186f3ac8f03b1363edc7587b7fb6ff16d9e14f/mobb.js
+// https://raw.githubusercontent.com/garrethdev/mobb.webflow.custom/6e186f3ac8f03b1363edc7587b7fb6ff16d9e14f/mobb.css
