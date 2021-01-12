@@ -1,0 +1,119 @@
+:root {
+	--background: #242221;
+	--fontColor: #f8f8f8;
+}
+
+.mobb-dark-bg {
+	background-color: var(--background);
+	color: var(--fontColor);
+}
+
+/* Icons */
+.mobb-modal-icon {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	vertical-align: middle;
+	fill: currentcolor;
+	outline: none;
+}
+
+/**
+ * Modals ($modals)
+ */
+
+/* 1. Ensure this sits above everything when visible */
+.mobb-modal {
+	position: absolute;
+	z-index: 10000; /* 1 */
+	top: 0;
+	left: 0;
+	visibility: hidden;
+	width: 100%;
+	height: 100vh;
+  overflow-y: hidden;
+}
+
+.mobb-modal.is-visible {
+	visibility: visible;
+}
+
+.mobb-modal-overlay {
+	position: fixed;
+	z-index: 10;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: hsla(0, 0%, 0%, 0.5);
+	visibility: hidden;
+	opacity: 0;
+	transition: visibility 0s linear 0.3s, opacity 0.3s;
+}
+
+.mobb-modal.is-visible .mobb-modal-overlay {
+	opacity: 1;
+	visibility: visible;
+	transition-delay: 0s;
+}
+
+.mobb-modal-wrapper {
+	position: absolute;
+	z-index: 9999;
+	top: 50%;
+	left: 50%;
+	width: 32em;
+	margin-left: -16em;
+	background-color: var(--fontColor);
+	box-shadow: 0 0 1.5em hsla(0, 0%, 0%, 0.35);
+}
+
+.mobb-modal-transition {
+	transition: all 0.3s 0.12s;
+	transform: translateY(-10%);
+	opacity: 0;
+}
+
+.mobb-modal.is-visible .mobb-modal-transition {
+	transform: translateY(-50%);
+	opacity: 1;
+}
+
+.mobb-modal-header,
+.mobb-modal-content {
+	padding: 1em;
+}
+
+.mobb-modal-header {
+	position: relative;
+	background-color: var(--background);
+}
+
+.mobb-modal-close {
+	position: absolute;
+	top: 0;
+	right: 0;
+	padding: 1em;
+	color: var(--fontColor);
+	background: none;
+	border: 0;
+}
+
+.mobb-modal-close:hover {
+	color: #777;
+}
+
+.mobb-modal-heading {
+	font-size: 1.125em;
+	margin: 0;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.mobb-modal-content > *:first-child {
+	margin-top: 0;
+}
+
+.mobb-modal-content > *:last-child {
+	margin-bottom: 0;
+}
