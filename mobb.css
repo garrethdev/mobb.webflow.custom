@@ -3,6 +3,10 @@
 	--fontColor: #f8f8f8;
 }
 
+body {
+	-webkit-font-smoothing: antialiased;
+}
+
 .mobb-dark-bg {
 	background-color: var(--background);
 	color: var(--fontColor);

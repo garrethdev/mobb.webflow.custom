@@ -7,7 +7,8 @@ var storageKeys = {
 	videosPlayed: 'videosPlayed'
 };
 var formSelector = 'form[name="email-form"]';
-var serverUrl = 'http://localhost:4040/api';
+var isLocal = window.location.host.includes('localhost');
+var serverUrl = isLocal ? 'http://localhost:4040/api' : 'https://api.mobb.co/api';
 
 /**
  * ========================= Storage File ==================================
@@ -70,8 +71,15 @@ function clearStorage() {
 }
 
 /**
- * ========================= Sign In Checker File ==================================
+ * ========================= Modal and other utils File ==================================
  */
+
+/**
+ * Returns if the modal is open
+ */
+function isModalOpen() {
+	return $('#email-signup-modal').hasClass('is-visible');
+}
 
 /**
  * Extract value from the node using selector
@@ -95,15 +103,20 @@ function extractFromSelector(selector) {
 }
 
 /**
- * Checks if the user has submitted the details
+ * Show model helper with other things
  */
-function checkSignUp() {
-	var runOnThisPage = true;
+function showModal() {
+	$('#email-signup-modal').addClass('is-visible');
+	$('.mobb-modal').css({ top: window.scrollY });
+	document.body.style.overflow = 'hidden';
+}
 
-	var email = getStorageItem(storageKeys.email);
-	if (!email && runOnThisPage) {
-		showModal();
-	}
+/**
+ * Hide model helper with other things
+ */
+function hideModal() {
+	$('#email-signup-modal').removeClass('is-visible');
+	document.body.style.overflow = 'auto';
 }
 
 /**
@@ -126,6 +139,25 @@ function checkQueryParams() {
 		console.error('error in get query params: ', e);
 	}
 }
+
+/**
+ * ========================= Sign In Checker File ==================================
+ */
+
+/**
+ * Checks if the user has submitted the details
+ */
+function checkSignUp() {
+	var runOnThisPage = true;
+	var email = getStorageItem(storageKeys.email);
+	if (!email && runOnThisPage) {
+		var isOpened = isModalOpen();
+		if (!isOpened) {
+			showModal();
+		}
+	}
+}
+
 /**
  * Make call to server to update or create the user details
  */
@@ -134,6 +166,10 @@ function makeUserUpdateAPICall() {
 		email: getStorageItem(storageKeys.email),
 		firstName: getStorageItem(storageKeys.firstName)
 	};
+	if (!userPayload.email) {
+		console.log('There is no user information to submit to the server!');
+		return false;
+	}
 	$.post(serverUrl + '/users', userPayload).done(function (response) {
 		console.log('Posted data to server');
 		// TODO: Show message/notification to user
@@ -192,33 +228,38 @@ function createModalInBody() {
 }
 
 /**
- * Chore part of the app
+ * Handle video playback
+ */
+function handleVideoPlaybackCheck() {
+	$('.video-js').each(function (_, item) {
+		videojs(item.id).ready(function () {
+			this.on('timeupdate', function () {
+				console.log(this.currentTime());
+				var currentTime = this.currentTime();
+				if (currentTime > 5 && currentTime < 6 && !item.shownPop && !getStorageItem(storageKeys.email)) {
+					this.pause();
+					item.shownPop = true;
+					checkSignUp();
+				}
+			})
+		});
+	});
+}
+
+/**
+ * Run the checks and add listeners when the app is ready
  */
 $(document).ready(function () {
+	// Other code that needs to be executed on app ready
 	createModalInBody();
-	$('.mobb-modal-toggle').click(function (params) {
-		hideModal();
-	});
-	$(formSelector).submit(signupUser);
 	checkQueryParams();
 	setTimeout(() => {
 		checkSignUp();
 	}, 2000);
+
+	// Add listeners here
+	$(document).on('click', '.mobb-modal-toggle', hideModal);
+	// $(document).on('submit', formSelector, signupUser);
+	$(formSelector).submit(signupUser);
+	handleVideoPlaybackCheck();
 });
-
-/**
- * Show model helper with other things
- */
-function showModal() {
-	$('#email-signup-modal').addClass('is-visible');
-	$('.mobb-modal').css({ top: window.scrollY });
-	document.body.style.overflow = 'hidden';
-}
-
-/**
- * Hide model helper with other things
- */
-function hideModal() {
-	$('#email-signup-modal').removeClass('is-visible');
-	document.body.style.overflow = 'auto';
-}
