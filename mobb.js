@@ -120,22 +120,20 @@ function checkQueryParams() {
 			if (params.email) {
 				setStorageItem(storageKeys.email, params.email);
 			}
+			makeUserUpdateAPICall();
 		}
 	} catch (e) {
 		console.error('error in get query params: ', e);
 	}
 }
-
 /**
- * Update server with user details
+ * Make call to server to update or create the user details
  */
-function signupUser(event) {
-	event.preventDefault();
-	var email = extractFromSelector(formSelector + ' input[name="Email"]');
-	var firstName = extractFromSelector(formSelector + ' input[name="Name"]');
-	var userPayload = { email: email, firstName: firstName };
-	setStorageItem(storageKeys.email, email);
-	setStorageItem(storageKeys.firstName, firstName);
+function makeUserUpdateAPICall() {
+	var userPayload = {
+		email: getStorageItem(storageKeys.email),
+		firstName: getStorageItem(storageKeys.firstName)
+	};
 	$.post(serverUrl + '/users', userPayload).done(function (response) {
 		console.log('Posted data to server');
 		// TODO: Show message/notification to user
@@ -143,6 +141,18 @@ function signupUser(event) {
 	}).fail(function (er) {
 		console.error('Error in submitting data to server');
 	});
+}
+
+/**
+ * Get user details from form and update the server with user details
+ */
+function signupUser(event) {
+	event.preventDefault();
+	var email = extractFromSelector(formSelector + ' input[name="Email"]');
+	var firstName = extractFromSelector(formSelector + ' input[name="Name"]');
+	setStorageItem(storageKeys.email, email);
+	setStorageItem(storageKeys.firstName, firstName);
+	makeUserUpdateAPICall();
 }
 
 /**
@@ -197,17 +207,10 @@ $(document).ready(function () {
 });
 
 /**
- * Toggle modal visibility
- */
-function toggleModal() {
-	$('#email-signup-modal').toggleClass('is-visible');
-}
-
-/**
  * Show model helper with other things
  */
 function showModal() {
-	toggleModal();
+	$('#email-signup-modal').addClass('is-visible');
 	$('.mobb-modal').css({ top: window.scrollY });
 	document.body.style.overflow = 'hidden';
 }
@@ -216,6 +219,6 @@ function showModal() {
  * Hide model helper with other things
  */
 function hideModal() {
-	toggleModal();
+	$('#email-signup-modal').removeClass('is-visible');
 	document.body.style.overflow = 'auto';
 }
