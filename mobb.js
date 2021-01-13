@@ -7,6 +7,8 @@ var storageKeys = {
 	videosPlayed: 'videosPlayed'
 };
 var formSelector = 'form[name="email-form"]';
+var moduleFormSelector = '#podcast-module';
+var podcastForm;
 var isLocal = window.location.host.includes('localhost');
 var serverUrl = isLocal ? 'http://localhost:4040/api' : 'https://api.mobb.co/api';
 
@@ -247,6 +249,59 @@ function handleVideoPlaybackCheck() {
 }
 
 /**
+ * ========================= Podcast Module File ==================================
+ */
+
+/**
+ * Handles podcast submit module
+ */
+function submitPodcastModule() {
+	var container = podcastForm.parent();
+	var doneBlock = $('.w-form-done', container);
+	var failBlock = $('.w-form-fail', container);
+
+	var action = podcastForm.attr('action');
+	var method = podcastForm.attr('method');
+	podcastForm.find('#email').val(getStorageItem(storageKeys.email));
+	podcastForm.find('#firstName').val(getStorageItem(storageKeys.firstName));
+	// TODO: add actual link to podcast
+	podcastForm.find('#docLink').val('https://mobb.webflow.io/podcast-episodes/how-to-defeat-a-negative-mindset-and-why-you-were-born-to-win');
+	var data = podcastForm.serialize();
+
+	// call via ajax
+	$.ajax({
+		type: method,
+		url: action,
+		data: data,
+		success: function (resultData) {
+			if (!resultData) {
+				// show error (fail) block
+				podcastForm.show();
+				doneBlock.hide();
+				failBlock.show();
+				console.log(e);
+				return;
+			}
+			// show success (done) block
+			podcastForm.hide();
+			doneBlock.show();
+			failBlock.hide();
+		},
+
+		error: function (e) {
+			// show error (fail) block
+			podcastForm.show();
+			doneBlock.hide();
+			failBlock.show();
+			console.log(e);
+		}
+	});
+
+	// prevent default web flow action
+	return false;
+}
+
+/**
  * Run the checks and add listeners when the app is ready
  */
 $(document).ready(function () {
@@ -256,11 +311,13 @@ $(document).ready(function () {
 	setTimeout(() => {
 		checkSignUp();
 	}, 2000);
+	podcastForm = $(moduleFormSelector);
 
 	// Add listeners here
 	$(document).on('click', '.mobb-modal-toggle', hideModal);
 	// $(document).on('submit', formSelector, signupUser);
 	$(formSelector).submit(signupUser);
+	podcastForm.submit(submitPodcastModule);
 	handleVideoPlaybackCheck();
 });
 
