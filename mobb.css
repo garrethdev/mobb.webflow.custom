@@ -7,6 +7,23 @@ body {
 	-webkit-font-smoothing: antialiased;
 }
 
+/* Video js css over ride */
+.video-js .vjs-big-play-button {
+	left: 50% !important;
+	top: 50% !important;
+	transform: translate(-50%, -50%) !important;
+}
+
+/* Mobb designs */
+
+.w-100 {
+	width: 100% !important;
+}
+
+.h-auto {
+	height: auto !important;
+}
+
 .mobb-dark-bg {
 	background-color: var(--background);
 	color: var(--fontColor);
