@@ -150,7 +150,7 @@ function checkQueryParams() {
  * Checks if the user has submitted the details
  */
 function checkSignUp() {
-	var runOnThisPage = true;
+	var runOnThisPage = window.location.pathname !== '/';
 	var email = getStorageItem(storageKeys.email);
 	if (!email && runOnThisPage) {
 		var isOpened = isModalOpen();
