@@ -8,9 +8,12 @@ var storageKeys = {
 };
 var formSelector = 'form[name="email-form"]';
 var moduleFormSelector = '#podcast-module';
+var modelSelector = '#email-signup-modal';
 var podcastForm;
-var isLocal = window.location.host.includes('localhost');
-var serverUrl = isLocal ? 'http://localhost:4040/api' : 'https://api.mobb.co/api';
+var host = window.location.host;
+var prodHost = 'https://api.mobb.co';
+var isLocal = strIncludes(host, 'localhost') || strIncludes(host, '127.0.0.1');
+var serverUrl = isLocal ? 'http://localhost:4040/api' : prodHost + '/api';
 
 /**
  * ========================= Storage File ==================================
@@ -80,7 +83,7 @@ function clearStorage() {
  * Returns if the modal is open
  */
 function isModalOpen() {
-	return $('#email-signup-modal').hasClass('is-visible');
+	return $(modelSelector).hasClass('is-visible');
 }
 
 /**
@@ -108,7 +111,7 @@ function extractFromSelector(selector) {
  * Show model helper with other things
  */
 function showModal() {
-	$('#email-signup-modal').addClass('is-visible');
+	$(modelSelector).addClass('is-visible');
 	$('.mobb-modal').css({ top: window.scrollY });
 	document.body.style.overflow = 'hidden';
 }
@@ -117,7 +120,7 @@ function showModal() {
  * Hide model helper with other things
  */
 function hideModal() {
-	$('#email-signup-modal').removeClass('is-visible');
+	$(modelSelector).removeClass('is-visible');
 	document.body.style.overflow = 'auto';
 }
 
@@ -143,14 +146,46 @@ function checkQueryParams() {
 }
 
 /**
+ * 
+ * @param {String} str - String to be checked against
+ * @param {String} value - Value to be checked in the string
+ */
+function strIncludes(str, value) {
+	return str.indexOf(value) !== -1;
+}
+
+/**
+ * Checks if the url is internal url or not
+ * @param {String} url - Url to be checked if it is internal or not
+ */
+function checkIfUrlIsInternal(url) {
+	return strIncludes(url, 'localhost') || strIncludes(url, '127.0.0.1') || strIncludes(url, window.location.hostname);
+}
+
+/**
  * ========================= Sign In Checker File ==================================
  */
+
+/**
+ * Checks if we need to block the users redirection
+ * @param {ClickEvent} event 
+ */
+function checkRedirection(event) {
+	var runOnThisPage = window.location.pathname === '/';
+	const link = event.currentTarget.href;
+	if (runOnThisPage && checkIfUrlIsInternal(link)) {
+		var loggedIn = checkSignUp();
+		if (!loggedIn) {
+			event.preventDefault();
+		}
+	}
+}
 
 /**
  * Checks if the user has submitted the details
  */
 function checkSignUp() {
-	var runOnThisPage = window.location.pathname !== '/';
+	var runOnThisPage = true;
 	var email = getStorageItem(storageKeys.email);
 	if (!email && runOnThisPage) {
 		var isOpened = isModalOpen();
@@ -158,15 +193,18 @@ function checkSignUp() {
 			showModal();
 		}
 	}
+	return !!email;
 }
 
 /**
  * Make call to server to update or create the user details
  */
 function makeUserUpdateAPICall() {
+	var email = extractFromSelector(formSelector + ' input[name="Email"]');
+	var firstName = extractFromSelector(formSelector + ' input[name="Name"]');
 	var userPayload = {
-		email: getStorageItem(storageKeys.email),
-		firstName: getStorageItem(storageKeys.firstName)
+		email: email,
+		firstName: firstName
 	};
 	if (!userPayload.email) {
 		console.log('There is no user information to submit to the server!');
@@ -174,9 +212,13 @@ function makeUserUpdateAPICall() {
 	}
 	$.post(serverUrl + '/users', userPayload).done(function (response) {
 		console.log('Posted data to server');
+		setStorageItem(storageKeys.email, userPayload.email);
+		setStorageItem(storageKeys.firstName, userPayload.firstName);
 		// TODO: Show message/notification to user
 		hideModal();
+		$(modelSelector + ' .w-form-fail').hide();
 	}).fail(function (er) {
+		$(modelSelector + ' .w-form-fail').show();
 		console.error('Error in submitting data to server');
 	});
 }
@@ -186,10 +228,6 @@ function makeUserUpdateAPICall() {
  */
 function signupUser(event) {
 	event.preventDefault();
-	var email = extractFromSelector(formSelector + ' input[name="Email"]');
-	var firstName = extractFromSelector(formSelector + ' input[name="Name"]');
-	setStorageItem(storageKeys.email, email);
-	setStorageItem(storageKeys.firstName, firstName);
 	makeUserUpdateAPICall();
 }
 
@@ -220,7 +258,7 @@ function createModalInBody() {
 							<div>Thank you! Your submission has been received!</div>
 						</div>
 						<div class="error-message w-form-fail">
-							<div>Oops! Something went wrong while submitting the form.</div>
+							<div>Sorry, didn't work please try again!</div>
 						</div>
 					</div>
         </div>
@@ -315,6 +353,7 @@ $(document).ready(function () {
 
 	// Add listeners here
 	$(document).on('click', '.mobb-modal-toggle', hideModal);
+	$(document).on('click', 'a', checkRedirection);
 	// $(document).on('submit', formSelector, signupUser);
 	$(formSelector).submit(signupUser);
 	podcastForm.submit(submitPodcastModule);
