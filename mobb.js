@@ -288,6 +288,7 @@ function handleVideoPlaybackCheck() {
 				var currentTime = currentVideo.currentTime();
 				if (currentTime > 5 && !item.shownPop && !getStorageItem(storageKeys.email)) {
 					setTimeout(() => {
+						currentVideo.exitFullscreen();
 						currentVideo.pause();
 					}, 300);
 					item.shownPop = true;
