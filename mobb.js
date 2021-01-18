@@ -6,6 +6,7 @@ var storageKeys = {
 	videoStartTime: 'videoStartTime',
 	videosPlayed: 'videosPlayed'
 };
+var closeButtonSelector = 'button.mobb-modal-toggle';
 var formSelector = 'form[name="email-form"]';
 var moduleFormSelector = '#podcast-module';
 var modelSelector = '#email-signup-modal';
@@ -109,10 +110,17 @@ function extractFromSelector(selector) {
 
 /**
  * Show model helper with other things
+ * @param {boolean} preventClose - Prevents user to close the popup
  */
-function showModal() {
+function showModal(preventClose) {
+	$(closeButtonSelector).show();
 	$(modelSelector).addClass('is-visible');
+	$(modelSelector + ' .mobb-modal-overlay').addClass('mobb-modal-toggle');
 	$('.mobb-modal').css({ top: window.scrollY });
+	if (preventClose) {
+		$(closeButtonSelector).hide();
+		$(modelSelector + ' .mobb-modal-overlay').removeClass('mobb-modal-toggle');
+	}
 	document.body.style.overflow = 'hidden';
 }
 
@@ -183,14 +191,16 @@ function checkRedirection(event) {
 
 /**
  * Checks if the user has submitted the details
+ * @param {boolean} preventClose - Prevents user to close the popup 
  */
-function checkSignUp() {
+
+function checkSignUp(preventClose) {
 	var runOnThisPage = true;
 	var email = getStorageItem(storageKeys.email);
 	if (!email && runOnThisPage) {
 		var isOpened = isModalOpen();
 		if (!isOpened) {
-			showModal();
+			showModal(preventClose);
 		}
 	}
 	return !!email;
@@ -274,12 +284,14 @@ function handleVideoPlaybackCheck() {
 	$('.video-js').each(function (_, item) {
 		videojs(item.id).ready(function () {
 			this.on('timeupdate', function () {
-				console.log(this.currentTime());
-				var currentTime = this.currentTime();
-				if (currentTime > 5 && currentTime < 6 && !item.shownPop && !getStorageItem(storageKeys.email)) {
-					this.pause();
+				var currentVideo = this;
+				var currentTime = currentVideo.currentTime();
+				if (currentTime > 5 && !item.shownPop && !getStorageItem(storageKeys.email)) {
+					setTimeout(() => {
+						currentVideo.pause();
+					}, 300);
 					item.shownPop = true;
-					checkSignUp();
+					checkSignUp(true);
 				}
 			})
 		});
