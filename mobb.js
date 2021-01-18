@@ -260,9 +260,10 @@ function createModalInBody() {
 				<div class="mobb-modal-content">
 					<div class="w-form">
 						<form id="modal-email-form" name="email-form" data-name="Email Form">
-							<input type="text" class="form-field w-input" maxlength="40" name="Name" data-name="Name" placeholder="Name" id="modal-name" required="">
-							<input type="email" class="form-field w-input" maxlength="50" name="Email" data-name="Email" placeholder="Email Address" id="modal-email" required="">
-							<input type="submit" value="Sign Me Up" data-wait="Please wait..." class="main-button w-button">
+							<input type="email" class="form-field w-input" maxlength="50" name="Email" data-name="Email" placeholder="Email Address" id="modal-email" required=""/>
+							<div class="flex-row align-center checkbox-wrapper"><input type="checkbox" class="form-field w-input" name="Accept" data-name="accept" id="modal-accept" required="" /><label for="modal-accept">Text to be provided</label></div>
+							<input type="text" class="hide-me form-field w-input" maxlength="40" name="Name" data-name="Name" placeholder="Name" id="modal-name" required="" />
+							<input type="submit" value="Sign Me Up" data-wait="Please wait..." class="main-button w-button" />
 						</form>
 						<div class="success-message w-form-done">
 							<div>Thank you! Your submission has been received!</div>

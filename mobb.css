@@ -16,12 +16,34 @@ body {
 
 /* Mobb designs */
 
+.hide-me {
+	display: none;
+}
+
 .w-100 {
 	width: 100% !important;
 }
 
 .h-auto {
 	height: auto !important;
+}
+
+.flex-row {
+	display: flex;
+}
+
+.align-center {
+	align-items: center;
+}
+
+.checkbox-wrapper {
+	margin-bottom: 32px;
+}
+
+input[type="checkbox"].form-field, input[type="radio"].form-field {
+	height: 16px;
+	width: auto;
+	margin: 0 5px 0 0;
 }
 
 .mobb-dark-bg {
