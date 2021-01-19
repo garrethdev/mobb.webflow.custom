@@ -154,7 +154,7 @@ function checkQueryParams() {
 }
 
 /**
- * 
+ *
  * @param {String} str - String to be checked against
  * @param {String} value - Value to be checked in the string
  */
@@ -176,7 +176,7 @@ function checkIfUrlIsInternal(url) {
 
 /**
  * Checks if we need to block the users redirection
- * @param {ClickEvent} event 
+ * @param {ClickEvent} event
  */
 function checkRedirection(event) {
 	var runOnThisPage = window.location.pathname === '/';
@@ -191,7 +191,7 @@ function checkRedirection(event) {
 
 /**
  * Checks if the user has submitted the details
- * @param {boolean} preventClose - Prevents user to close the popup 
+ * @param {boolean} preventClose - Prevents user to close the popup
  */
 
 function checkSignUp(preventClose) {
@@ -255,15 +255,15 @@ function createModalInBody() {
         <button class="mobb-modal-close mobb-modal-toggle">X</button>
         <h2 class="mobb-modal-heading">Weekly Advice & Inspiration</h2>
       </div>
-
       <div class="mobb-modal-body mobb-dark-bg">
 				<div class="mobb-modal-content">
 					<div class="w-form">
 						<form id="modal-email-form" name="email-form" data-name="Email Form">
 							<input type="email" class="form-field w-input" maxlength="50" name="Email" data-name="Email" placeholder="Email Address" id="modal-email" required=""/>
-							<div class="flex-row align-center checkbox-wrapper"><input type="checkbox" class="form-field w-input" name="Accept" data-name="accept" id="modal-accept" required="" /><label for="modal-accept">Text to be provided</label></div>
+							<div class="flex-row align-center checkbox-wrapper"><input type="checkbox" class="form-field w-input" name="Accept" data-name="accept" id="modal-accept" required="" /><label for="modal-accept">I'm not a user, sign me up instead.</label></div>
 							<input type="text" class="hide-me form-field w-input" maxlength="40" name="Name" data-name="Name" placeholder="Name" id="modal-name" required="" />
-							<input type="submit" value="Sign Me Up" data-wait="Please wait..." class="main-button w-button" />
+							<input type="submit" value="Sign In" data-wait="Please wait..." class="main-button w-button" />
+							<input type="submit" value="Sign Me Up" data-wait="Please wait..." class="hide-me main-button w-button" />
 						</form>
 						<div class="success-message w-form-done">
 							<div>Thank you! Your submission has been received!</div>
