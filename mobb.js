@@ -316,8 +316,8 @@ function submitPodcastModule() {
 	var method = podcastForm.attr('method');
 	podcastForm.find('#email').val(getStorageItem(storageKeys.email));
 	podcastForm.find('#firstName').val(getStorageItem(storageKeys.firstName));
-	// TODO: add actual link to podcast
-	podcastForm.find('#docLink').val('https://mobb.webflow.io/podcast-episodes/how-to-defeat-a-negative-mindset-and-why-you-were-born-to-win');
+	// NOTE: docLink value is added by web flow dynamic content
+	// podcastForm.find('#docLink').val('https://mobb.webflow.io/podcast-episodes/how-to-defeat-a-negative-mindset-and-why-you-were-born-to-win');
 	var data = podcastForm.serialize();
 
 	// call via ajax
@@ -360,9 +360,10 @@ $(document).ready(function () {
 	// Other code that needs to be executed on app ready
 	createModalInBody();
 	checkQueryParams();
-	setTimeout(() => {
-		checkSignUp();
-	}, 2000);
+	// NOTE: removed checking of the user's login on load
+	// setTimeout(() => {
+	// 	checkSignUp();
+	// }, 2000);
 	podcastForm = $(moduleFormSelector);
 
 	// Add listeners here

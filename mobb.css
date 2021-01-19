@@ -47,8 +47,8 @@ input[type="checkbox"].form-field, input[type="radio"].form-field {
 }
 
 .mobb-dark-bg {
-	background-color: var(--background);
-	color: var(--fontColor);
+	background-color: var(--background) !important;
+	color: var(--fontColor) !important;
 }
 
 /* Icons */
