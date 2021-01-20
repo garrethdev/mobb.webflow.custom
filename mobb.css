@@ -37,7 +37,15 @@ body {
 }
 
 .checkbox-wrapper {
-	margin-bottom: 32px;
+	margin-bottom: 10px;
+}
+
+.checkbox-wrapper label {
+	margin-bottom: 0;
+}
+
+input.disabled {
+	opacity: 0.8;
 }
 
 input[type="checkbox"].form-field, input[type="radio"].form-field {
