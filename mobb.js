@@ -190,6 +190,26 @@ function checkRedirection(event) {
 }
 
 /**
+ * Handle change event of the checkbox
+ * @param {ChangeEvent} event
+ */
+function handleModalSignInChange(event) {
+	var isChecked = event.currentTarget.checked;
+	$(modelSelector + ' .w-form-fail').hide();
+	if (isChecked) {
+		$('#modal-name').fadeIn();
+		$('#modal-name').prop('required', true);
+		$('#modal-sign-out').fadeIn();
+		$('#modal-sign-in').hide();
+	} else {
+		$('#modal-name').prop('required', false);
+		$('#modal-name').fadeOut();
+		$('#modal-sign-in').fadeIn();
+		$('#modal-sign-out').hide();
+	}
+}
+
+/**
  * Checks if the user has submitted the details
  * @param {boolean} preventClose - Prevents user to close the popup
  */
@@ -206,6 +226,21 @@ function checkSignUp(preventClose) {
 	return !!email;
 }
 
+function makeCreateUserAPICall(userPayload) {
+	$.post(serverUrl + '/users', userPayload).done(function (response) {
+		console.log('Posted data to server');
+		setStorageItem(storageKeys.email, userPayload.email);
+		setStorageItem(storageKeys.firstName, userPayload.firstName);
+		hideModal();
+		$(modelSelector + ' .w-form-fail').hide();
+	}).fail(function (er) {
+		$(modelSelector + ' .w-form-fail').show();
+		console.error('Error in submitting data to server');
+	}).always(function () {
+		$(modelSelector + ' input[type="submit"]').prop('disabled', false);
+	});
+}
+
 /**
  * Make call to server to update or create the user details
  */
@@ -220,17 +255,34 @@ function makeUserUpdateAPICall() {
 		console.log('There is no user information to submit to the server!');
 		return false;
 	}
-	$.post(serverUrl + '/users', userPayload).done(function (response) {
-		console.log('Posted data to server');
-		setStorageItem(storageKeys.email, userPayload.email);
-		setStorageItem(storageKeys.firstName, userPayload.firstName);
-		// TODO: Show message/notification to user
-		hideModal();
-		$(modelSelector + ' .w-form-fail').hide();
-	}).fail(function (er) {
-		$(modelSelector + ' .w-form-fail').show();
-		console.error('Error in submitting data to server');
-	});
+	// Disabling the input buttons when the for is submitting.
+	$(modelSelector + ' input[type="submit"]').prop('disabled', true);
+
+	// Checking if the user has clicked sign up
+	var signUpChecked = $('#modal-accept').is(':checked');
+	if (signUpChecked) {
+		makeCreateUserAPICall(userPayload);
+	} else {
+		$.get(serverUrl + '/users', { email: userPayload.email }).done(function (response) {
+			if (response.exists) {
+				console.log('Checking if user exists in database');
+				setStorageItem(storageKeys.email, userPayload.email);
+				$(modelSelector + ' .w-form-fail').hide();
+				$(modelSelector + ' input[type="submit"]').prop('disabled', false);
+				hideModal();
+			} else {
+				// Show error that the details did not work.
+				$(modelSelector + ' .w-form-fail').show();
+				$(modelSelector + ' input[type="submit"]').prop('disabled', false);
+				console.error('User does not exists');
+			}
+		}).fail(function (er) {
+			$(modelSelector + ' .w-form-fail').show();
+			console.error('Error in submitting data to server');
+		}).always(function () {
+			$(modelSelector + ' input[type="submit"]').prop('disabled', false);
+		});
+	}
 }
 
 /**
@@ -260,10 +312,10 @@ function createModalInBody() {
 					<div class="w-form">
 						<form id="modal-email-form" name="email-form" data-name="Email Form">
 							<input type="email" class="form-field w-input" maxlength="50" name="Email" data-name="Email" placeholder="Email Address" id="modal-email" required=""/>
-							<div class="flex-row align-center checkbox-wrapper"><input type="checkbox" class="form-field w-input" name="Accept" data-name="accept" id="modal-accept" required="" /><label for="modal-accept">I'm not a user, sign me up instead.</label></div>
-							<input type="text" class="hide-me form-field w-input" maxlength="40" name="Name" data-name="Name" placeholder="Name" id="modal-name" required="" />
-							<input type="submit" value="Sign In" data-wait="Please wait..." class="main-button w-button" />
-							<input type="submit" value="Sign Me Up" data-wait="Please wait..." class="hide-me main-button w-button" />
+							<input type="text" class="hide-me form-field w-input" maxlength="40" name="Name" data-name="Name" placeholder="Name" id="modal-name" />
+							<div class="flex-row align-center checkbox-wrapper"><input type="checkbox" class="form-field w-input" name="Accept" data-name="accept" id="modal-accept" /><label for="modal-accept">I'm not a user, sign me up instead.</label></div>
+							<input type="submit" id="modal-sign-in" value="Sign In" data-wait="Please wait..." class="main-button w-button" />
+							<input type="submit" id="modal-sign-out" value="Sign Me Up" data-wait="Please wait..." class="hide-me main-button w-button" />
 						</form>
 						<div class="success-message w-form-done">
 							<div>Thank you! Your submission has been received!</div>
@@ -369,6 +421,7 @@ $(document).ready(function () {
 	// Add listeners here
 	$(document).on('click', '.mobb-modal-toggle', hideModal);
 	$(document).on('click', 'a', checkRedirection);
+	$(document).on('change', '#modal-accept', handleModalSignInChange);
 	// $(document).on('submit', formSelector, signupUser);
 	$(formSelector).submit(signupUser);
 	podcastForm.submit(submitPodcastModule);
