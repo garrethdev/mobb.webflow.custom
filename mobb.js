@@ -233,6 +233,7 @@ function makeCreateUserAPICall(userPayload) {
 		setStorageItem(storageKeys.firstName, userPayload.firstName);
 		hideModal();
 		$(modelSelector + ' .w-form-fail').hide();
+		handlePodcastFormData();
 	}).fail(function (er) {
 		$(modelSelector + ' .w-form-fail').show();
 		console.error('Error in submitting data to server');
@@ -270,6 +271,7 @@ function makeUserUpdateAPICall() {
 				$(modelSelector + ' .w-form-fail').hide();
 				$(modelSelector + ' input[type="submit"]').prop('disabled', false);
 				hideModal();
+				handlePodcastFormData();
 			} else {
 				// Show error that the details did not work.
 				$(modelSelector + ' .w-form-fail').show();
