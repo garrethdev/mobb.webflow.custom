@@ -357,52 +357,13 @@ function handleVideoPlaybackCheck() {
  */
 
 /**
- * Handles podcast submit module
+ * Tries to set users data on the podcast form when the form exists on the page.
  */
-function submitPodcastModule() {
-	var container = podcastForm.parent();
-	var doneBlock = $('.w-form-done', container);
-	var failBlock = $('.w-form-fail', container);
-
-	var action = podcastForm.attr('action');
-	var method = podcastForm.attr('method');
-	podcastForm.find('#email').val(getStorageItem(storageKeys.email));
-	podcastForm.find('#firstName').val(getStorageItem(storageKeys.firstName));
-	// NOTE: docLink value is added by web flow dynamic content
-	// podcastForm.find('#docLink').val('https://mobb.webflow.io/podcast-episodes/how-to-defeat-a-negative-mindset-and-why-you-were-born-to-win');
-	var data = podcastForm.serialize();
-
-	// call via ajax
-	$.ajax({
-		type: method,
-		url: action,
-		data: data,
-		success: function (resultData) {
-			if (!resultData) {
-				// show error (fail) block
-				podcastForm.show();
-				doneBlock.hide();
-				failBlock.show();
-				console.log(e);
-				return;
-			}
-			// show success (done) block
-			podcastForm.hide();
-			doneBlock.show();
-			failBlock.hide();
-		},
-
-		error: function (e) {
-			// show error (fail) block
-			podcastForm.show();
-			doneBlock.hide();
-			failBlock.show();
-			console.log(e);
-		}
-	});
-
-	// prevent default web flow action
-	return false;
+function handlePodcastFormData() {
+	if (podcastForm) {
+		podcastForm.find('#email').val(getStorageItem(storageKeys.email));
+		podcastForm.find('#firstName').val(getStorageItem(storageKeys.firstName));
+	}
 }
 
 /**
@@ -424,8 +385,8 @@ $(document).ready(function () {
 	$(document).on('change', '#modal-accept', handleModalSignInChange);
 	// $(document).on('submit', formSelector, signupUser);
 	$(formSelector).submit(signupUser);
-	podcastForm.submit(submitPodcastModule);
 	handleVideoPlaybackCheck();
+	handlePodcastFormData();
 });
 
 // http://cdn.jsdelivr.net/gh/garrethdev/mobb.webflow.custom@6e186f3ac8f03b1363edc7587b7fb6ff16d9e14f/mobb.js
