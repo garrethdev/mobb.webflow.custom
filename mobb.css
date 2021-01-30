@@ -2,19 +2,23 @@
   --background: #242221;
   --fontColor: #f8f8f8;
 }
+
 body {
   -webkit-font-smoothing: antialiased;
 }
+
 /* Video js css over ride */
 .video-js .vjs-big-play-button {
   left: 50% !important;
   top: 50% !important;
   transform: translate(-50%, -50%) !important;
 }
+
 /* Mobb designs */
 .hide-me {
-  /***display: none;***/
+  display: none;
 }
+
 .w-100 {
   width: 100% !important;
 }
@@ -33,6 +37,7 @@ body {
 .checkbox-wrapper label {
   margin-bottom: 0;
 }
+
 input.disabled {
   opacity: 0.8;
 }
@@ -41,6 +46,7 @@ input[type="checkbox"].form-field, input[type="radio"].form-field {
   width: auto;
   margin: 0 5px 0 0;
 }
+
 .mobb-dark-bg {
   background-color: var(--background) !important;
   color: var(--fontColor) !important;
@@ -145,6 +151,7 @@ input[type="checkbox"].form-field, input[type="radio"].form-field {
 .mobb-modal-content > *:last-child {
   margin-bottom: 0;
 }
+
 @media only screen and (max-width: 500px) {
   .mobb-modal-wrapper {
     width: 96vw;
