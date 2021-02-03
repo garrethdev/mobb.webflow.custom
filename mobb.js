@@ -4,7 +4,8 @@ var storageKeys = {
   email: 'email',
   firstName: 'firstName',
   videoStartTime: 'videoStartTime',
-  videosPlayed: 'videosPlayed'
+  videosPlayed: 'videosPlayed',
+  redirectLink: 'redirectLink'
 };
 var closeButtonSelector = 'button.mobb-modal-toggle';
 var formSelector = 'form[name="email-form"]';
@@ -130,6 +131,12 @@ function showModal(preventClose) {
 function hideModal() {
   $(modelSelector).removeClass('is-visible');
   document.body.style.overflow = 'auto';
+  var redirectLink = getStorageItem(storageKeys.redirectLink);
+  var email = getStorageItem(storageKeys.email);
+  if (email && redirectLink) {
+    window.location.href = redirectLink;
+    removeStorageItem(storageKeys.redirectLink);
+  }
 }
 
 /**
@@ -184,6 +191,7 @@ function checkRedirection(event) {
   if (runOnThisPage && checkIfUrlIsInternal(link)) {
     var loggedIn = checkSignUp();
     if (!loggedIn) {
+      setStorageItem(storageKeys.redirectLink, link);
       event.preventDefault();
     }
   }
@@ -388,6 +396,7 @@ $(document).ready(function () {
   $(document).on('change', '#modal-accept', handleModalSignInChange);
   // $(document).on('submit', formSelector, signupUser);
   $(formSelector).submit(signupUser);
+  podcastForm.submit(checkSignUp);
   handleVideoPlaybackCheck();
   handlePodcastFormData();
 });
