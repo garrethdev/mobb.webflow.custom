@@ -396,7 +396,7 @@ $(document).ready(function () {
   $(document).on('change', '#modal-accept', handleModalSignInChange);
   // $(document).on('submit', formSelector, signupUser);
   $(formSelector).submit(signupUser);
-  podcastForm.submit(checkSignUp);
+  podcastForm.submit(() => checkSignUp());
   handleVideoPlaybackCheck();
   handlePodcastFormData();
 });
