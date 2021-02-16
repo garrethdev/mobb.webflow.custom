@@ -322,7 +322,7 @@ function createModalInBody() {
     <div class="mobb-modal-content">
     <div class="w-form">
     <form id="modal-email-form" name="email-form" data-name="Email Form">
-    <input type="email" class="form-field w-input" style="margin-bottom:8px!important;" maxlength="50" name="Email" data-name="Email" placeholder="Email Address" id="modal-email" required=""/>
+    <input type="email" class="form-field w-input" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$" style="margin-bottom:8px!important;" maxlength="50" name="Email" data-name="Email" placeholder="Email Address" id="modal-email" required title="Please provide a valid e-mail address"/>
     <input type="text" class="hide-me form-field w-input" style="margin-bottom:8px!important;" maxlength="40" name="Name" data-name="Name" placeholder="Name" id="modal-name" />
     <div class="flex-row align-center checkbox-wrapper"><input type="checkbox" class="form-field w-input" name="Accept" data-name="accept" id="modal-accept" /><label for="modal-accept">I'm not a member, sign me up now</label></div>
   <input type="submit" id="modal-sign-in" value="Sign In" data-wait="Please wait..." class="main-button w-button fullwidth" />
