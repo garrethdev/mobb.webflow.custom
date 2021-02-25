@@ -178,6 +178,14 @@ function checkIfUrlIsInternal(url) {
 }
 
 /**
+ * Checks if the url is about page url or not
+ * @param {String} url - Url to be checked if it is about page or not
+ */
+function checkIfUrlIsForAboutPage(url) {
+  return url && url.split('/').slice(-1)[0] !== 'about';
+}
+
+/**
  * ========================= Sign In Checker File ==================================
  */
 
@@ -188,7 +196,7 @@ function checkIfUrlIsInternal(url) {
 function checkRedirection(event) {
   var runOnThisPage = window.location.pathname === '/';
   const link = event.currentTarget.href;
-  if (runOnThisPage && checkIfUrlIsInternal(link)) {
+  if (runOnThisPage && checkIfUrlIsInternal(link) && !checkIfUrlIsForAboutPage(link)) {
     var loggedIn = checkSignUp();
     if (!loggedIn) {
       setStorageItem(storageKeys.redirectLink, link);

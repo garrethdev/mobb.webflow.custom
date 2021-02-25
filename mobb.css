@@ -151,10 +151,19 @@ input[type="checkbox"].form-field, input[type="radio"].form-field {
 .mobb-modal-content > *:last-child {
   margin-bottom: 0;
 }
+.episode-card-thumbnail {
+  height: 190px;
+}
 
 @media only screen and (max-width: 500px) {
   .mobb-modal-wrapper {
     width: 96vw;
     margin-left: -48vw;
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  .episode-card-thumbnail {
+    height: 200px;
   }
 }
