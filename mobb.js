@@ -182,7 +182,7 @@ function checkIfUrlIsInternal(url) {
  * @param {String} url - Url to be checked if it is about page or not
  */
 function checkIfUrlIsForAboutPage(url) {
-  return url && url.split('/').slice(-1)[0] !== 'about';
+  return url && url.split('/').slice(-1)[0] === 'about';
 }
 
 /**
