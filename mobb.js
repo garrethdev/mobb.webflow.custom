@@ -194,7 +194,7 @@ function checkIfUrlIsForAboutPage(url) {
  * @param {ClickEvent} event
  */
 function checkRedirection(event) {
-  var runOnThisPage = window.location.pathname === '/';
+  var runOnThisPage = /^(\/|\/about)$/.test(window.location.pathname);
   const link = event.currentTarget.href;
   if (runOnThisPage && checkIfUrlIsInternal(link) && !checkIfUrlIsForAboutPage(link)) {
     var loggedIn = checkSignUp();
