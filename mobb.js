@@ -16,7 +16,7 @@ var host = window.location.host;
 var prodHost = 'https://api.mobb.co';
 var isLocal = strIncludes(host, 'localhost') || strIncludes(host, '127.0.0.1');
 var serverUrl = isLocal ? 'http://localhost:4040/api' : prodHost + '/api';
-
+var joinNowButtonAboutUSPageSelector = 'a.main-button.p-lr-64.w-button';
 /**
  * ========================= Storage File ==================================
  */
@@ -255,6 +255,7 @@ function makeCreateUserAPICall(userPayload) {
     console.error('Error in submitting data to server');
   }).always(function () {
     $(modelSelector + ' input[type="submit"]').prop('disabled', false);
+    $(joinNowButtonAboutUSPageSelector).hide();
   });
 }
 
@@ -299,6 +300,7 @@ function makeUserUpdateAPICall() {
       console.error('Error in submitting data to server');
     }).always(function () {
       $(modelSelector + ' input[type="submit"]').prop('disabled', false);
+      $(joinNowButtonAboutUSPageSelector).hide();
     });
   }
 }
@@ -372,6 +374,18 @@ function handleVideoPlaybackCheck() {
 }
 
 /**
+ * Hide Join Now button if user is logged in
+ */
+function toggleJoinNowButtonOnAboutUSPage() {
+  var loggedIn = !!getStorageItem(storageKeys.email);;
+  if (loggedIn) {
+    $(joinNowButtonAboutUSPageSelector).hide();
+    return;
+  }
+  $(joinNowButtonAboutUSPageSelector).show();
+}
+
+/**
  * ========================= Podcast Module File ==================================
  */
 
@@ -407,6 +421,11 @@ $(document).ready(function () {
   podcastForm.submit(() => checkSignUp());
   handleVideoPlaybackCheck();
   handlePodcastFormData();
+  // called below function for About page only
+  var isAboutPage = /^(\/about(.*))$/.test(window.location.pathname);
+  if (isAboutPage) {
+    toggleJoinNowButtonOnAboutUSPage();
+  }
 });
 
 // http://cdn.jsdelivr.net/gh/garrethdev/mobb.webflow.custom@6e186f3ac8f03b1363edc7587b7fb6ff16d9e14f/mobb.js
