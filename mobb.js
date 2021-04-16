@@ -224,6 +224,83 @@ function handleModalSignInChange(event) {
     $('#modal-sign-out').hide();
   }
 }
+/**
+ * Validate email address input
+ * @param {String} email
+ */
+function validateEmail(email= '') {
+  const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return regex.test(String(email).toLowerCase());
+}
+
+/**
+ * check if user exist in DB
+ * @param {String} email
+ */
+function checkEmailExistence(email) {
+  return $.get(serverUrl + '/users', { email }).done(function (response) {
+    return Promise.resolve({success: true, exists: response.exists});
+  }).fail(function (er) {
+    return Promise.reject({success: false, error: 'Error in submitting data to server'});
+  });
+}
+
+/**
+ * Handle change event of the email address input
+ * @param {ChangeEvent} event
+ */
+async function handleEmailChange(event) {
+  $(modelSelector + ' input[type="submit"]').prop('disabled', true);
+  $(modelSelector + ' .w-form-fail').hide();
+  var email = event.currentTarget.value;
+  if(validateEmail(email)) {
+    $(modelSelector + ' .loader').show();
+    try {
+      var response = await checkEmailExistence(email);
+      if(response.exists) {
+        $('#modal-name').val('');
+        $('#modal-name').prop('required', false);
+        $('#modal-name').fadeOut();
+        $('.mobb-modal-submit-text').hide();
+        $(modelSelector + ' input[type="submit"]').prop('disabled', false);
+      } else {
+        $('#modal-name').fadeIn();
+        $('#modal-name').prop('required', true);
+        $(modelSelector + ' .mobb-modal-submit-text').show();
+        var firstName = extractFromSelector(formSelector + ' input[name="Name"]');
+        if(firstName) {
+          $(modelSelector + ' input[type="submit"]').prop('disabled', false);
+        } else {
+          $(modelSelector + ' input[type="submit"]').prop('disabled', true);
+        }
+      }
+    } catch (e) {
+      $(modelSelector + ' .w-form-fail').show();
+    } finally {
+      $(modelSelector + ' .loader').hide();
+    }
+  } else {
+    $(modelSelector + ' input[type="submit"]').prop('disabled', true);
+    $('#modal-name').val('');
+    $('#modal-name').prop('required', false);
+    $('#modal-name').fadeOut();
+    $(modelSelector + ' .mobb-modal-submit-text').hide();
+    $(modelSelector + ' .loader').hide();
+  }
+}
+
+/**
+ * Handle change event of the name input
+ * @param {ChangeEvent} event
+ */
+function handleNameChange(event) {
+  var name = event.currentTarget.value;
+  if(name) {
+    $(modelSelector + ' input[type="submit"]').prop('disabled', false);
+  } else {
+    $(modelSelector + ' input[type="submit"]').prop('disabled', true);
+  }
+}
 
 /**
  * Checks if the user has submitted the details
@@ -243,6 +320,8 @@ function checkSignUp(preventClose) {
 }
 
 function makeCreateUserAPICall(userPayload) {
+  $(modelSelector + ' .loader').show();
+  $(modelSelector + ' input[type="submit"]').prop('disabled', true);
   $.post(serverUrl + '/users', userPayload).done(function (response) {
     console.log('Posted data to server');
     setStorageItem(storageKeys.email, userPayload.email);
@@ -256,6 +335,7 @@ function makeCreateUserAPICall(userPayload) {
   }).always(function () {
     $(modelSelector + ' input[type="submit"]').prop('disabled', false);
     $(joinNowButtonAboutUSPageSelector).hide();
+    $(modelSelector + ' .loader').hide();
   });
 }
 
@@ -314,6 +394,20 @@ function signupUser(event) {
 }
 
 /**
+ * Get user details from form and update the server with user details
+ */
+function handleUnlockNow(event) {
+  event.preventDefault();
+  var email = extractFromSelector(formSelector + ' input[name="Email"]');
+  var firstName = extractFromSelector(formSelector + ' input[name="Name"]');
+  let payload = { email };
+  if(firstName) {
+    payload.firstName = firstName;
+  }
+  makeCreateUserAPICall(payload);
+}
+
+/**
  * Generates a modal and appends it to body
  */
 function createModalInBody() {
@@ -323,27 +417,31 @@ function createModalInBody() {
   modalBody.innerHTML = `
 <div class="mobb-modal-overlay mobb-modal-toggle"></div>
     <div class="mobb-modal-wrapper mobb-dark-bg mobb-modal-transition">
+    <img src="https://uploads-ssl.webflow.com/5ff632487b0ea55e9da61234/60467e96fe998506adc2d9c0_crown.svg" class="mobb-model-crown" />
+    <button class="mobb-modal-close mobb-modal-toggle">
+    <img src="https://uploads-ssl.webflow.com/5ff632487b0ea55e9da61234/6076cafb8bde420cda72272d_cancel.svg" />
+    </button>
     <div class="mobb-modal-header">
-    <button class="mobb-modal-close mobb-modal-toggle">X</button>
-    <h3 class="mobb-modal-heading">Weekly Advice &amp; Inspiration</h3>
-  <h5 class="mobb-modal-subtitle">Share your member email to unlock all content</h5>
+    <h3 class="mobb-modal-heading">Unlimited Access to Everything Black Business.</h3>
+  <h5 class="mobb-modal-subtitle">Enter your email to get access to our newsletter, podcast, and the exclusive <b>founder personality quiz.</b></h5>
   </div>
   <div class="mobb-modal-body mobb-dark-bg">
     <div class="mobb-modal-content">
-    <div class="w-form">
-    <form id="modal-email-form" name="email-form" data-name="Email Form">
-    <input type="email" class="form-field w-input" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$" style="margin-bottom:8px!important;" maxlength="50" name="Email" data-name="Email" placeholder="Email Address" id="modal-email" required title="Please provide a valid e-mail address"/>
-    <input type="text" class="hide-me form-field w-input" style="margin-bottom:8px!important;" maxlength="40" name="Name" data-name="Name" placeholder="Name" id="modal-name" />
-    <div class="flex-row align-center checkbox-wrapper"><input type="checkbox" class="form-field w-input" name="Accept" data-name="accept" id="modal-accept" /><label for="modal-accept">I'm not a member, sign me up now</label></div>
-  <input type="submit" id="modal-sign-in" value="Sign In" data-wait="Please wait..." class="main-button w-button fullwidth" />
-    <input type="submit" id="modal-sign-out" value="Sign Me Up" data-wait="Please wait..." class="hide-me main-button w-button fullwidth" />
+    <form class="w-form" id="modal-email-form" name="email-form" data-name="Email Form">
+    <input type="email" class="form-field w-input" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$" maxlength="50" name="Email" data-name="Email" placeholder="Email Address" id="modal-email" required title="Please provide a valid e-mail address"/>
+    <input type="text" class="hide-me form-field w-input" maxlength="40" name="Name" data-name="Name" placeholder="Name" id="modal-name" />
+    <div class="mobb-modal-submit-wrapper">
+    <input type="submit" id="modal-sign-in" value="Unlock Now" data-wait="Please wait..." class="main-button w-button fullwidth" disabled/>
+        <!--<input type="submit" id="modal-sign-out" value="Sign Me Up" data-wait="Please wait..." class="hide-me main-button w-button fullwidth" />-->
+    <div class="loader hide-me"></div>
+    </div>
+    <div class="mobb-modal-submit-text hide-me">By submitting this form, you are subscribing to our newsletter. Unsubscribe anytime.</div>
     </form>
     <div class="success-message w-form-done">
     <div>Welcome to the MOBB community. You now have access to all content and resources.</div>
   </div>
   <div class="error-message w-form-fail">
-    <div>Sorry, that email didn't work. If you aren't a member, mark the checkbox above.</div>
-  </div>
+    <div>Sorry, that email didn't work.</div>
   </div>
   </div>
   </div>
@@ -400,6 +498,28 @@ function handlePodcastFormData() {
 }
 
 /**
+ * Debounce function
+ * @param func
+ * @param wait
+ * @param immediate
+ * @returns {function(...[*]=)}
+ */
+function debounce(func, wait, immediate) {
+  var timeout;
+  return function() {
+    var context = this, args = arguments;
+    var later = function() {
+      timeout = null;
+      if (!immediate) func.apply(context, args);
+    };
+    var callNow = immediate && !timeout;
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+    if (callNow) func.apply(context, args);
+  };
+};
+
+/**
  * Run the checks and add listeners when the app is ready
  */
 $(document).ready(function () {
@@ -416,8 +536,11 @@ $(document).ready(function () {
   $(document).on('click', '.mobb-modal-toggle', hideModal);
   $(document).on('click', 'a', checkRedirection);
   $(document).on('change', '#modal-accept', handleModalSignInChange);
+  $(document).on('keydown paste', '#modal-email', debounce(handleEmailChange, 500));
+  $(document).on('keydown paste', '#modal-name', handleNameChange);
   // $(document).on('submit', formSelector, signupUser);
-  $(formSelector).submit(signupUser);
+  // $(formSelector).submit(signupUser);
+  $(formSelector).submit(handleUnlockNow);
   podcastForm.submit(() => checkSignUp());
   handleVideoPlaybackCheck();
   handlePodcastFormData();

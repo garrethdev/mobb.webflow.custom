@@ -1,6 +1,8 @@
 :root {
   --background: #242221;
   --fontColor: #f8f8f8;
+  --fontBlackColor: #000000;
+  --fontDarkGrayColor: #595655;
 }
 
 body {
@@ -37,6 +39,9 @@ body {
 .checkbox-wrapper label {
   margin-bottom: 0;
 }
+*:focus {
+  outline: 0 !important;
+}
 
 input.disabled {
   opacity: 0.8;
@@ -48,8 +53,8 @@ input[type="checkbox"].form-field, input[type="radio"].form-field {
 }
 
 .mobb-dark-bg {
-  background-color: var(--background) !important;
-  color: var(--fontColor) !important;
+  background-color: var(--fontColor) !important;
+  color: var(--fontBlackColor) !important;
 }
 /* Icons */
 .mobb-modal-icon {
@@ -99,12 +104,13 @@ input[type="checkbox"].form-field, input[type="radio"].form-field {
   z-index: 9999;
   top: 50%;
   left: 50%;
-  width: 32em;
-  margin-left: -16em;
-  padding-top: 1em;
-  padding-bottom: 1em;
+  width: 600px;
+  margin-left: -18em;
+  padding: 48px;
   background-color: var(--fontColor);
   box-shadow: 0 0 1.5em hsla(0, 0%, 0%, 0.35);
+  border: 1px solid #C3BCBA;
+  border-radius: 6px;
 }
 .mobb-modal-transition {
   transition: all 0.3s 0.12s;
@@ -115,35 +121,36 @@ input[type="checkbox"].form-field, input[type="radio"].form-field {
   transform: translateY(-50%);
   opacity: 1;
 }
-.mobb-modal-content {
-  padding: 1.5em;
-}
+
 .mobb-modal-header {
   position: relative;
-  background-color: var(--background);
-  padding-left: 1.5em;
-  padding-right: 1.5em;
-  padding-top: 1.5em;
+}
+.mobb-model-crown {
+  position: absolute;
+  top: -35px;
+  left: -25px;
 }
 .mobb-modal-close {
   position: absolute;
-  top: 0;
-  right: 0;
-  padding-right: 1em;
-  color: var(--fontColor);
-  background: none;
-  border: 0;
-}
-.mobb-modal-close:hover {
-  color: #777;
+  background: transparent;
+  top: 16px;
+  right: 16px;
+  padding: 0;
 }
 .mobb-modal-heading {
-  margin-bottom: 0.15em;
+  font-size: 32px;
+  line-height: 40px;
+  letter-spacing: 0.015em;
+  margin-bottom: 24px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 .mobb-modal-subtitle {
-  color: #B7B7B7;
+  font-size: 20px;
+  line-height: 23px;
+  letter-spacing: 0.015em;
+  color: var(--fontDarkGrayColor);
+  margin-bottom: 32px;
 }
 .mobb-modal-content > *:first-child {
   margin-top: 0;
@@ -151,14 +158,108 @@ input[type="checkbox"].form-field, input[type="radio"].form-field {
 .mobb-modal-content > *:last-child {
   margin-bottom: 0;
 }
+.mobb-modal-content .success-message,
+.mobb-modal-content .error-message {
+  border-radius: 3px;
+}
 .episode-card-thumbnail {
   height: 190px;
+}
+.form-field {
+  margin-bottom: 16px;
+  border: 1px solid #242221;
+  box-shadow: 0px 4px 10px rgb(0 0 0 / 2%), 0px 4px 10px rgb(0 0 0 / 2%), 0px 4px 10px rgb(0 0 0 / 2%), 0px 4px 10px rgb(0 0 0 / 2%);
+  border-radius: 3px;
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 20px;
+  line-height: 23px;
+  color: #242221;
+}
+.form-field::placeholder {
+  color: #B7B7B7;
+}
+.mobb-modal-wrapper .w-input:focus,
+.mobb-modal-wrapper .w-select:focus {
+  border: 2px solid #1E7670;
+  outline: 0;
+}
+
+.mobb-modal-wrapper .main-button:disabled {
+  background: #1E7670;
+  opacity: 0.5;
+  cursor: not-allowed !important;
+}
+.mobb-modal-wrapper .main-button.fullwidth {
+  font-size: 20px;
+  line-height: 23px;
+}
+.mobb-modal-submit-text {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 19px;
+  letter-spacing: 0.015em;
+  color: #B7B7B7;
+  text-align: center;
+  margin-top: 8px;
+}
+.mobb-modal-submit-wrapper {
+  position: relative;
+}
+
+.loader {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  border-top: 2px solid transparent;
+  width: 24px;
+  height: 24px;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 @media only screen and (max-width: 500px) {
   .mobb-modal-wrapper {
-    width: 96vw;
-    margin-left: -48vw;
+    width: 88vw !important;
+    margin-left: -44vw;
+    padding: 45px 30px;
+  }
+  .mobb-modal-heading {
+    font-size: 25px;
+    line-height: 27px;
+    margin-bottom: 20px;
+  }
+  .mobb-modal-subtitle {
+    font-size: 16px;
+    line-height: 20px;
+    margin-bottom: 20px;
+  }
+  .mobb-modal-submit-text {
+    font-size: 14px;
+    line-height: 18px;
+  }
+  .form-field {
+    font-size: 16px;
+    line-height: 18px;
+  }
+  .main-button.fullwidth {
+    font-size: 17px !important;
+    line-height: 18px !important;
   }
 }
 
