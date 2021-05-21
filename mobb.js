@@ -17,6 +17,8 @@ var prodHost = 'https://api.mobb.co';
 var isLocal = strIncludes(host, 'localhost') || strIncludes(host, '127.0.0.1');
 var serverUrl = isLocal ? 'http://localhost:4040/api' : prodHost + '/api';
 var joinNowButtonAboutUSPageSelector = 'a.main-button.p-lr-64.w-button';
+var bffbFreePreviewFormSelector = '#wf-form-Waitlist-Form-';
+
 /**
  * ========================= Storage File ==================================
  */
@@ -484,6 +486,20 @@ function toggleJoinNowButtonOnAboutUSPage() {
 }
 
 /**
+ * subscribe user on BFFB waiting List.
+ * @param {ChangeEvent} event
+ */
+function handleBFFBPreviewBtn(event) {
+  var selector = event.currentTarget.id;
+  var email = extractFromSelector('#' + selector + ' input[name="Email"]');
+
+  $.post(serverUrl + '/users/bffb', { email }).done(function (response) {
+    console.log('Posted data to server');
+  }).fail(function (er) {
+    console.error('Error in submitting data to server', er);
+  });
+}
+/**
  * ========================= Podcast Module File ==================================
  */
 
@@ -542,6 +558,11 @@ $(document).ready(function () {
   // $(formSelector).submit(signupUser);
   $(formSelector).submit(handleUnlockNow);
   podcastForm.submit(() => checkSignUp());
+  for(var i=0; i<5; i++) {
+    var selector = bffbFreePreviewFormSelector + i;
+    $(selector).submit(handleBFFBPreviewBtn);
+  }
+
   handleVideoPlaybackCheck();
   handlePodcastFormData();
   // called below function for About page only
