@@ -536,6 +536,23 @@ function debounce(func, wait, immediate) {
 };
 
 /**
+ * Handle Vimeo Player event
+ */
+function handleVimeoVideo() {
+  var iframe = document.querySelector('iframe');
+  var player = new Vimeo.Player(iframe);
+
+  player.on('timeupdate', function(data) {
+    if (data.seconds > 5*60) {
+      $('#timer').css({ display: 'block' });
+    }
+  });
+
+  player.on('ended', function() {
+    $('#timer').css({ display: 'block' });
+  });
+}
+/**
  * Run the checks and add listeners when the app is ready
  */
 $(document).ready(function () {
@@ -570,6 +587,13 @@ $(document).ready(function () {
   if (isAboutPage) {
     toggleJoinNowButtonOnAboutUSPage();
   }
+
+  // called below function for bffb-m1 page only
+  var isModulePage = /^(\/bffb-m1(.*))$/.test(window.location.pathname);
+  if (isModulePage) {
+    handleVimeoVideo();
+  }
+
 });
 
 // http://cdn.jsdelivr.net/gh/garrethdev/mobb.webflow.custom@6e186f3ac8f03b1363edc7587b7fb6ff16d9e14f/mobb.js
