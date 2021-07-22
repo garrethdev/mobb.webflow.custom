@@ -18,6 +18,11 @@ var isLocal = strIncludes(host, 'localhost') || strIncludes(host, '127.0.0.1');
 var serverUrl = isLocal ? 'http://localhost:4040/api' : prodHost + '/api';
 var joinNowButtonAboutUSPageSelector = 'a.main-button.p-lr-64.w-button';
 var bffbFreePreviewFormSelector = '#wf-form-Waitlist-Form-';
+var pages = {
+  about: `^(\\/about(.*))$`,
+  modulePage: `^(\\/bffb-m1(.*))$`,
+  homecomingVideoPage: `^(\\/homecoming-black-angel-investors)$`,
+}
 
 /**
  * ========================= Storage File ==================================
@@ -583,17 +588,22 @@ $(document).ready(function () {
   handleVideoPlaybackCheck();
   handlePodcastFormData();
   // called below function for About page only
-  var isAboutPage = /^(\/about(.*))$/.test(window.location.pathname);
+  var isAboutPage = new RegExp(pages.about).test(window.location.pathname);
   if (isAboutPage) {
     toggleJoinNowButtonOnAboutUSPage();
   }
 
   // called below function for bffb-m1 page only
-  var isModulePage = /^(\/bffb-m1(.*))$/.test(window.location.pathname);
+  var isModulePage = new RegExp(pages.modulePage).test(window.location.pathname);
   if (isModulePage) {
     handleVimeoVideo();
   }
 
+  // called below function for Homecoming webinar video page only
+  var isHomecomingVideoPage = new RegExp(pages.homecomingVideoPage).test(window.location.pathname);
+  if (isHomecomingVideoPage) {
+    checkSignUp(true);
+  }
 });
 
 // http://cdn.jsdelivr.net/gh/garrethdev/mobb.webflow.custom@6e186f3ac8f03b1363edc7587b7fb6ff16d9e14f/mobb.js
