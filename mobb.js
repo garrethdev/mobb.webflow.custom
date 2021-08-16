@@ -21,7 +21,7 @@ var bffbFreePreviewFormSelector = '#wf-form-Waitlist-Form-';
 var pages = {
   about: `^(\\/about(.*))$`,
   modulePage: `^(\\/bffb-m1(.*))$`,
-  homecomingVideoPage: `^(\\/homecoming-black-angel-investors)$`,
+  fullVideoPages: `^(\\/webinar-videos/(.*))$`,
 }
 
 /**
@@ -600,7 +600,7 @@ $(document).ready(function () {
   }
 
   // called below function for Homecoming webinar video page only
-  var isHomecomingVideoPage = new RegExp(pages.homecomingVideoPage).test(window.location.pathname);
+  var isHomecomingVideoPage = new RegExp(pages.fullVideoPages).test(window.location.pathname);
   if (isHomecomingVideoPage) {
     checkSignUp(true);
   }
