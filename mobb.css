@@ -145,6 +145,16 @@ input[type="checkbox"].form-field, input[type="radio"].form-field {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+.mobb-modal-heading-full-video {
+  font-size: 32px;
+  line-height: 40px;
+  letter-spacing: 0.015em;
+  margin-bottom: 24px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 .mobb-modal-subtitle {
   font-size: 20px;
   line-height: 23px;
@@ -240,6 +250,11 @@ input[type="checkbox"].form-field, input[type="radio"].form-field {
     padding: 45px 30px;
   }
   .mobb-modal-heading {
+    font-size: 25px;
+    line-height: 27px;
+    margin-bottom: 20px;
+  }
+  .mobb-modal-heading-full-video {
     font-size: 25px;
     line-height: 27px;
     margin-bottom: 20px;

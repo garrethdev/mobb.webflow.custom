@@ -119,8 +119,9 @@ function extractFromSelector(selector) {
 /**
  * Show model helper with other things
  * @param {boolean} preventClose - Prevents user to close the popup
+ * @param {boolean} isWebinarVideoPage
  */
-function showModal(preventClose) {
+function showModal(preventClose, isWebinarVideoPage) {
   $(closeButtonSelector).show();
   $(modelSelector).addClass('is-visible');
   $(modelSelector + ' .mobb-modal-overlay').addClass('mobb-modal-toggle');
@@ -129,6 +130,16 @@ function showModal(preventClose) {
     $(closeButtonSelector).hide();
     $(modelSelector + ' .mobb-modal-overlay').removeClass('mobb-modal-toggle');
   }
+  if (isWebinarVideoPage) {
+    $("h3.mobb-modal-heading").hide();
+    $("h5.mobb-modal-subtitle").hide();
+    $("h3.mobb-modal-heading-full-video").show();
+  } else {
+    $("h3.mobb-modal-heading").show();
+    $("h5.mobb-modal-subtitle").show();
+    $("h3.mobb-modal-heading-full-video").hide();
+  }
+
   document.body.style.overflow = 'hidden';
 }
 
@@ -312,15 +323,16 @@ function handleNameChange(event) {
 /**
  * Checks if the user has submitted the details
  * @param {boolean} preventClose - Prevents user to close the popup
+ * @param {boolean} isWebinarVideoPage
  */
 
-function checkSignUp(preventClose) {
+function checkSignUp(preventClose, isWebinarVideoPage= false) {
   var runOnThisPage = true;
   var email = getStorageItem(storageKeys.email);
   if (!email && runOnThisPage) {
     var isOpened = isModalOpen();
     if (!isOpened) {
-      showModal(preventClose);
+      showModal(preventClose, isWebinarVideoPage);
     }
   }
   return !!email;
@@ -429,8 +441,9 @@ function createModalInBody() {
     <img src="https://uploads-ssl.webflow.com/5ff632487b0ea55e9da61234/6076cafb8bde420cda72272d_cancel.svg" />
     </button>
     <div class="mobb-modal-header">
-    <h3 class="mobb-modal-heading">Unlimited Access to Everything Black Business.</h3>
-  <h5 class="mobb-modal-subtitle">Enter your email to get access to our newsletter, podcast, and the exclusive <b>founder personality quiz.</b></h5>
+        <h3 class="mobb-modal-heading-full-video">Get Access to Our Episodes</h3>
+        <h3 class="mobb-modal-heading">Unlimited Access to Everything Black Business.</h3>
+        <h5 class="mobb-modal-subtitle">Enter your email to get access to our newsletter, podcast, and the exclusive <b>founder personality quiz.</b></h5>
   </div>
   <div class="mobb-modal-body mobb-dark-bg">
     <div class="mobb-modal-content">
@@ -589,21 +602,16 @@ $(document).ready(function () {
   handlePodcastFormData();
   // called below function for About page only
   var isAboutPage = new RegExp(pages.about).test(window.location.pathname);
-  if (isAboutPage) {
-    toggleJoinNowButtonOnAboutUSPage();
-  }
+  isAboutPage && toggleJoinNowButtonOnAboutUSPage();
 
   // called below function for bffb-m1 page only
   var isModulePage = new RegExp(pages.modulePage).test(window.location.pathname);
-  if (isModulePage) {
-    handleVimeoVideo();
-  }
+  isModulePage && handleVimeoVideo();
 
   // called below function for Homecoming webinar video page only
   var isHomecomingVideoPage = new RegExp(pages.fullVideoPages).test(window.location.pathname);
-  if (isHomecomingVideoPage) {
-    checkSignUp(true);
-  }
+  isHomecomingVideoPage && checkSignUp(true, true);
+
 });
 
 // http://cdn.jsdelivr.net/gh/garrethdev/mobb.webflow.custom@6e186f3ac8f03b1363edc7587b7fb6ff16d9e14f/mobb.js
